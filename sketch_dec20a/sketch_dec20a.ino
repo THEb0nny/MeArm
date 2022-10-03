@@ -4,7 +4,7 @@
 
 #include <SoftwareSerial.h>
 #include <ServoSmooth.h>
-#include "GyverFilters.h"
+#include <GyverFilters.h>
 
 #define SERVO_AMOUNT 4 // Количество серво
 
@@ -59,7 +59,7 @@ void loop() {
     potsValues[i] = potsAnalogGFilterRA[i].filteredTime(analogRead(potsPins[i]));
     servosPos[i] = map(potsValues[i], 0, servosMaxAnalogValues[i], 0, 180);
     Serial.print(potsValues[i]);
-    Serial.print(", ");
+    if (i < SERVO_AMOUNT - 1) Serial.print(", ");
     servos[i].setTargetDeg(servosPos[i]);
   }
   Serial.println();
