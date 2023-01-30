@@ -26,8 +26,8 @@
 #define SERVOS_SPEED 130 // Скорость для серво
 #define SERVOS_ACCEL 0.2 // Ускорение для серво
 
-#define RA_FILTER_COEF 0.1 // Коэффицент фильтра
-#define RA_FILTER_SET_STEP 8 // Установка шага фильтрации
+#define RA_FILTER_COEF 0.5 // Коэффицент фильтра
+#define RA_FILTER_SET_STEP 5 // Установка шага фильтрации
 
 ServoSmooth servos[SERVO_AMOUNT];
 GFilterRA potsAnalogGFilterRA[SERVO_AMOUNT];
@@ -42,7 +42,7 @@ void setup() {
   // Настройка выходов/выходов
   for (byte i = 0; i < SERVO_AMOUNT; i++) {
     pinMode(potsPins[i], INPUT); // Установить режим пина потенциометра
-    servos[i].attach(SERVO1_PIN, 600, 2400); // Подключаем серво к пину
+    servos[i].attach(servosPins[i], 600, 2400); // Подключаем серво к пину
     servos[i].setSpeed(SERVOS_SPEED); // Ограничить скорость серво
     servos[i].setAccel(SERVOS_ACCEL); // Установить ускорение (разгон и торможение) серво
     servos[i].setTargetDeg(analogRead(potsValues[i])); // Установить стартовую позицию серво по потенциометра
@@ -52,16 +52,17 @@ void setup() {
 }
 
 void loop() {
-  for (byte i = 0; i < SERVO_AMOUNT; i++) {
+  for (int i = 0; i < SERVO_AMOUNT; i++) {
     servos[i].tick();
   }
-  for (byte i = 0; i < SERVO_AMOUNT; i++) {
-    potsValues[i] = potsAnalogGFilterRA[i].filteredTime(analogRead(potsPins[i]));
+  for (int i = 0; i < SERVO_AMOUNT; i++) {
+    potsValues[i] = analogRead(potsPins[i]);
+    potsValues[i] = potsAnalogGFilterRA[i].filteredTime(potsValues[i]);
     servosPos[i] = map(potsValues[i], 0, servosMaxAnalogValues[i], 0, 180);
     Serial.print(potsValues[i]);
     if (i < SERVO_AMOUNT - 1) Serial.print(", ");
     servos[i].setTargetDeg(servosPos[i]);
   }
   Serial.println();
-  while (servos[0].getCurrent() == 0 && servos[1].getCurrent() == 0 && servos[2].getCurrent() == 0 && servos[3].getCurrent() == 0); // Пока сервоприводы двигаются мы ждём
+  //while (servos[0].getCurrent() == 0 && servos[1].getCurrent() == 0 && servos[2].getCurrent() == 0 && servos[3].getCurrent() == 0); // Пока сервоприводы двигаются мы ждём
 }
