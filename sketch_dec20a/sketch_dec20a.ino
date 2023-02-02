@@ -24,7 +24,7 @@
 #define POT4_MAX_ANALOG_VAL 1020
 
 #define SERVOS_SPEED 130 // Скорость для серво
-#define SERVOS_ACCEL 0.2 // Ускорение для серво
+#define SERVOS_ACCEL 0.4 // Ускорение для серво
 
 #define RA_FILTER_COEF 0.5 // Коэффицент фильтра
 #define RA_FILTER_SET_STEP 5 // Установка шага фильтрации
